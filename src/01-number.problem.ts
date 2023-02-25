@@ -4,8 +4,10 @@ import { expect, it } from "vitest";
 import { z } from "zod";
 //       ^ 🕵️‍♂️
 
+const number_schema = z.number();
+
 export const toString = (num: unknown) => {
-  return String(num);
+  return String(number_schema.parse(num));
 };
 
 // TESTS

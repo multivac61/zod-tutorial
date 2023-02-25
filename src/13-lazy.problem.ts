@@ -1,14 +1,19 @@
 // CODE
 
-import { expect, it } from "vitest";
-import { z } from "zod";
+import { expect, it } from "vitest"
+import { z } from "zod"
 
-const MenuItem = z.object({
-  //             ^ 🕵️‍♂️
+interface MenuItemType {
+  link: string;
+  label: string;
+  children?: MenuItemType[];
+}
+
+const MenuItem: z.ZodType<MenuItemType> = z.object({
   link: z.string(),
   label: z.string(),
-  children: z.array(MenuItem).default([]),
-});
+  children: z.lazy(() => z.array(MenuItem)),
+})
 
 // TESTS
 
@@ -23,9 +28,9 @@ it("Should succeed when it encounters a correct structure", async () => {
         children: [],
       },
     ],
-  };
-  expect(MenuItem.parse(menuItem)).toEqual(menuItem);
-});
+  }
+  expect(MenuItem.parse(menuItem)).toEqual(menuItem)
+})
 
 it("Should error when it encounters an incorrect structure", async () => {
   const menuItem = {
@@ -36,6 +41,6 @@ it("Should error when it encounters an incorrect structure", async () => {
         children: [],
       },
     ],
-  };
-  expect(() => MenuItem.parse(menuItem)).toThrowError();
-});
+  }
+  expect(() => MenuItem.parse(menuItem)).toThrowError()
+})
